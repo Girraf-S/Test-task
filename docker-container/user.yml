@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: n-user-service
+  jpa:
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        generate_statistics: false
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  datasource:
+    url: jdbc:postgresql://n-user-db:5432/n-user-db
+    username: postgres
+    password: mitrandir
+
+jwt:
+  key: Nikon1234
+  expiration: 3600000
+  bearer: 'Bearer '
+  begin-index: 7
+
+service:
+  books-domain: http://n-books-service:8080
+  domain: http://n-user-service:8080
+
+server:
+  port: 8080
+
+security:
+  encoder:
+    strength: 12

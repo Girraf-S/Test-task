@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: n-library-service
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/n-library-db
+    username: postgres
+    password: mitrandir
+
+jwt:
+  key: Nikon1234
+  bearer: 'Bearer '
+  begin-index: 7
+
+server:
+  port: 8083
+service:
+  user-domain: http://localhost:8081
+  books-domain: http://localhost:8082
+  domain: http://localhost:8083
+
+
+

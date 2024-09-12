@@ -1,0 +1,79 @@
+version: '3.8'
+name: library-container
+services:
+  n-user-db:
+    image: postgres
+    container_name: n-user-db
+    environment:
+      POSTGRES_PASSWORD: mitrandir
+      POSTGRES_DB: n-user-db
+    ports:
+      - "5433:5432"
+    volumes:
+      - n-user-db-data:/var/lib/postgresql/data
+      - ./init-user-db.sql:/docker-entrypoint-initdb.d/init-user-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+  n-books-db:
+    image: postgres
+    container_name: n-books-db
+    environment:
+      POSTGRES_PASSWORD: mitrandir
+      POSTGRES_DB: n-books-db
+    ports:
+      - "5434:5432"
+    volumes:
+      - n-books-db-data:/var/lib/postgresql/data
+      - ./init-books-db.sql:/docker-entrypoint-initdb.d/init-books-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+  n-library-db:
+    image: postgres
+    container_name: n-library-db
+    environment:
+      POSTGRES_PASSWORD: mitrandir
+      POSTGRES_DB: n-library-db
+    ports:
+      - "5435:5432"
+    volumes:
+      - n-library-db-data:/var/lib/postgresql/data
+      - ./init-library-db.sql:/docker-entrypoint-initdb.d/init-library-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+  n-user-service:
+    container_name: n-user-service
+    image: n-user-service
+    depends_on:
+      n-user-db:
+        condition: service_healthy
+    volumes:
+      - ./user.yml:/app/application.yml:ro
+    ports:
+      - "8081:8080"
+  n-books-service:
+    container_name: n-books-service
+    image: n-books-service
+    depends_on:
+      n-books-db:
+        condition: service_healthy
+    volumes:
+      - ./books.yml:/app/application.yml:ro
+    ports:
+      - "8082:8080"
+  n-library-service:
+    image: n-library-service
+    container_name: n-library-service
+    depends_on:
+      n-library-db:
+        condition: service_healthy
+    volumes:
+      - ./library.yml:/app/application.yml:ro
+    ports:
+      - "8083:8080"
+volumes:
+  n-user-db-data:
+  n-books-db-data:
+  n-library-db-data:
